@@ -38,7 +38,18 @@ func main() {
 	if err != nil {
 		log.Fatal("Unable to create notebook:", err)
 	}
+	entry, err := gtk.EntryNew()
+	if err != nil {
+		log.Fatal("Unable to create entry:", err)
+	}
 
+
+	entry.Connect("activate", func() {
+		S, _ = entry.GetText()
+
+	})
+
+	entry.SetPlaceholderText("Enter the Location")
 	// Calling (*gtk.Container).Add() with a gtk.Grid will add widgets next
 	// to each other, in the order they were added, to the right side of the
 	// last added widget when the grid is in a horizontal orientation, and
@@ -46,7 +57,7 @@ func main() {
 	// orientation.  Using a grid in this manner works similar to a gtk.Box,
 	// but unlike gtk.Box, a gtk.Grid will respect its child widget's expand
 	// and margin properties.
-	grid.Add(SearchBar())
+	grid.Add(entry)
 	grid.Add(SearchButton())
 
 	// Widgets may also be added by calling (*gtk.Grid).Attach() to specify
@@ -90,24 +101,6 @@ func main() {
 
 
 
-// A search Bar
-
-func SearchBar() *gtk.Entry {
-	// create a search bar
-	entry, err := gtk.EntryNew()
-	if err != nil {
-		log.Fatal("Unable to create entry:", err)
-	}
-
-
-	entry.Connect("activate", func() {
-		S, _ = entry.GetText()
-
-	})
-
-	entry.SetPlaceholderText("Enter the Location")
-	return entry
-}
 
 func SearchButton() *gtk.Button{
 	buttonSearch, err := gtk.ButtonNewWithLabel("Search")
