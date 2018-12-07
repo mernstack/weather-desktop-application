@@ -9,12 +9,11 @@ import (
 )
 
 func main() {
-	const appID = "com.github.gotk3.gotk3-examples"
+	const appID = "com.github.mernstack.weather-desktop-application"
 	application, err := gtk.ApplicationNew(appID, glib.APPLICATION_FLAGS_NONE)
 	if err != nil {
 		log.Fatal("Could not create application:", err)
 	}
-
 	application.Connect("activate", func() {
 		win := newWindow(application)
 
@@ -44,11 +43,13 @@ func newWindow(application *gtk.Application) *gtk.ApplicationWindow {
 
 	win.SetTitle("GOTK3 Actions Example")
 
-	// Label text in the window
-	lbl, err := gtk.LabelNew("Use the menu button to test the actions")
+	// create a search bar
+	entry, err := gtk.EntryNew()
 	if err != nil {
-		log.Fatal("Could not create label:", err)
+		log.Fatal("Unable to create entry:", err)
 	}
+
+
 
 	// Create a header bar
 	header, err := gtk.HeaderBarNew()
@@ -89,21 +90,13 @@ func newWindow(application *gtk.Application) *gtk.ApplicationWindow {
 	customActionGroup := glib.SimpleActionGroupNew()
 	win.InsertActionGroup("custom", customActionGroup)
 
-	// Create an action in the custom action group
-	aPanic := glib.SimpleActionNew("panic", nil)
-	aPanic.Connect("activate", func() {
-		lbl.SetLabel("PANIC!")
-	})
-	customActionGroup.AddAction(aPanic)
-	win.AddAction(aPanic)
-
 	mbtn.SetMenuModel(&menu.MenuModel)
 
 	// add the menu button to the header
 	header.PackStart(mbtn)
 
 	// Assemble the window
-	win.Add(lbl)
+	win.Add(entry)
 	win.SetTitlebar(header)
 	win.SetPosition(gtk.WIN_POS_MOUSE)
 	win.SetDefaultSize(600, 300)
