@@ -115,7 +115,7 @@ func SearchButton() *gtk.Button{
 		log.Fatal("Unable to create Button:", err)
 	}
 
-	buttonSearch.Connect("activate", func() {
+	buttonSearch.Connect("clicked", func() {
 		var stringD  = weather_api.ShowWeather(S)
 		fmt.Println(stringD)
 	})
