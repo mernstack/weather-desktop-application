@@ -101,6 +101,7 @@ func SearchBar() *gtk.Entry {
 
 
 	entry.Connect("activate", func() {
+		fmt.Println(entry.GetText())
 		S, _ = entry.GetText()
 
 	})
