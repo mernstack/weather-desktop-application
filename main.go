@@ -101,7 +101,6 @@ func SearchBar() *gtk.Entry {
 
 
 	entry.Connect("activate", func() {
-		fmt.Println(entry.GetText())
 		S, _ = entry.GetText()
 
 	})
@@ -118,9 +117,8 @@ func SearchButton() *gtk.Button{
 
 	buttonSearch.Connect("clicked", func() {
 		fmt.Println("Clicked")
-		weatherData := weather_api.ShowWeather(S)
-		fmt.Println(weatherData);
-
+		var stringD  = weather_api.ShowWeather(S)
+		fmt.Println(stringD)
 	})
 
 	return buttonSearch
