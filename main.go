@@ -44,10 +44,6 @@ func main() {
 	}
 
 
-	entry.Connect("activate", func() {
-		S, _ = entry.GetText()
-
-	})
 
 	entry.SetPlaceholderText("Enter the Location")
 	// Calling (*gtk.Container).Add() with a gtk.Grid will add widgets next
@@ -58,7 +54,13 @@ func main() {
 	// but unlike gtk.Box, a gtk.Grid will respect its child widget's expand
 	// and margin properties.
 	grid.Add(entry)
+	entry.SetHExpand(true)
 	grid.Add(SearchButton())
+
+	entry.Connect("activate", func() {
+		S, _ = entry.GetText()
+
+	})
 
 	// Widgets may also be added by calling (*gtk.Grid).Attach() to specify
 	// where to place the widget in the grid, and optionally how many rows
