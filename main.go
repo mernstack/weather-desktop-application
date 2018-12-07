@@ -116,6 +116,7 @@ func SearchButton() *gtk.Button{
 	}
 
 	buttonSearch.Connect("clicked", func() {
+		fmt.Println("Clicked")
 		var stringD  = weather_api.ShowWeather(S)
 		fmt.Println(stringD)
 	})
