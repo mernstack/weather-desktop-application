@@ -4,7 +4,11 @@ import (
 	"log"
 
 	"github.com/gotk3/gotk3/gtk"
+	"desktop-app/weather-api"
+	"fmt"
 )
+
+var S string
 
 func main() {
 	gtk.Init(nil)
@@ -95,14 +99,26 @@ func SearchBar() *gtk.Entry {
 		log.Fatal("Unable to create entry:", err)
 	}
 
+
+	entry.Connect("activate", func() {
+		S, _ = entry.GetText()
+
+	})
+
 	entry.SetPlaceholderText("Enter the Location")
 	return entry
 }
 
 func SearchButton() *gtk.Button{
-	buttonHello, err := gtk.ButtonNewWithLabel("Search")
+	buttonSearch, err := gtk.ButtonNewWithLabel("Search")
 	if err != nil {
 		log.Fatal("Unable to create Button:", err)
 	}
-	return buttonHello
+
+	buttonSearch.Connect("activate", func() {
+		var stringD  = weather_api.ShowWeather(S)
+		fmt.Println(stringD)
+	})
+
+	return buttonSearch
 }

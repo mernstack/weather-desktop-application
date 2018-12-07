@@ -31,9 +31,9 @@ type Place struct {
 
 
 
-func ShowWeather(loc string) {
+func ShowWeather(loc string) string{
 	locCode := GetLocation(loc)
-	GetWeather(locCode)
+	return GetWeather(locCode)
 }
 
 func GetLocation(loc string)   string {
@@ -47,11 +47,11 @@ func GetLocation(loc string)   string {
 	return data.Query.Results.Place.Woeid
 }
 
-func GetWeather(locCode string){
+func GetWeather(locCode string) string{
 	query := `q=select%20*%20from%20weather.forecast%20where%20woeid%3D` + locCode +`&format=json`
 	body := FetchData(query)
 
-	fmt.Println(string(body))
+	return string(body)
 
 }
 
