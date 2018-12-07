@@ -2,101 +2,88 @@ package main
 
 import (
 	"log"
-	"os"
 
-	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 )
 
 func main() {
-	const appID = "com.github.mernstack.weather-desktop-application"
-	application, err := gtk.ApplicationNew(appID, glib.APPLICATION_FLAGS_NONE)
-	if err != nil {
-		log.Fatal("Could not create application:", err)
-	}
-	application.Connect("activate", func() {
-		win := newWindow(application)
+	gtk.Init(nil)
 
-		aNew := glib.SimpleActionNew("new", nil)
-		aNew.Connect("activate", func() {
-			newWindow(application).ShowAll()
-		})
-		application.AddAction(aNew)
-
-		aQuit := glib.SimpleActionNew("quit", nil)
-		aQuit.Connect("activate", func() {
-			application.Quit()
-		})
-		application.AddAction(aQuit)
-
-		win.ShowAll()
-	})
-
-	os.Exit(application.Run(os.Args))
-}
-
-func newWindow(application *gtk.Application) *gtk.ApplicationWindow {
-	win, err := gtk.ApplicationWindowNew(application)
+	win, err := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
 	if err != nil {
 		log.Fatal("Unable to create window:", err)
 	}
-
-	win.SetTitle("Weather Application")
-
-
-
-	// Create a header bar
-	header, err := gtk.HeaderBarNew()
-	if err != nil {
-		log.Fatal("Could not create header bar:", err)
-	}
-	header.SetShowCloseButton(true)
-	header.SetTitle("Weather App")
-	header.SetSubtitle("Weather App")
-
-	// Create a new menu button
-	mbtn, err := gtk.MenuButtonNew()
-	if err != nil {
-		log.Fatal("Could not create menu button:", err)
-	}
-
-	// Set up the menu model for the button
-	menu := glib.MenuNew()
-	if menu == nil {
-		log.Fatal("Could not create menu (nil)")
-	}
-	// Actions with the prefix 'app' reference actions on the application
-	// Actions with the prefix 'win' reference actions on the current window (specific to ApplicationWindow)
-	// Other prefixes can be added to widgets via InsertActionGroup
-	menu.Append("New Window", "app.new")
-	menu.Append("Close Window", "win.close")
-	menu.Append("Custom Panic", "custom.panic")
-	menu.Append("Quit", "app.quit")
-
-	// Create the action "win.close"
-	aClose := glib.SimpleActionNew("close", nil)
-	aClose.Connect("activate", func() {
-		win.Close()
+	win.SetTitle("Grid Example")
+	win.Connect("destroy", func() {
+		gtk.MainQuit()
 	})
-	win.AddAction(aClose)
 
-	// Create and insert custom action group with prefix "custom"
-	customActionGroup := glib.SimpleActionGroupNew()
-	win.InsertActionGroup("custom", customActionGroup)
+	// Create a new grid widget to arrange child widgets
+	grid, err := gtk.GridNew()
+	if err != nil {
+		log.Fatal("Unable to create grid:", err)
+	}
 
-	mbtn.SetMenuModel(&menu.MenuModel)
+	// gtk.Grid embeds an Orientable struct to simulate the GtkOrientable
+	// GInterface.  Set the orientation from the default horizontal to
+	// vertical.
+	grid.SetOrientation(gtk.ORIENTATION_VERTICAL)
 
-	// add the menu button to the header
-	header.PackStart(mbtn)
 
-	// Assemble the window
-	win.Add(SearchBar())
-	win.Add(SearchButton())
-	win.SetTitlebar(header)
-	win.SetPosition(gtk.WIN_POS_MOUSE)
-	win.SetDefaultSize(600, 300)
-	return win
+	nb, err := gtk.NotebookNew()
+	if err != nil {
+		log.Fatal("Unable to create notebook:", err)
+	}
+
+	// Calling (*gtk.Container).Add() with a gtk.Grid will add widgets next
+	// to each other, in the order they were added, to the right side of the
+	// last added widget when the grid is in a horizontal orientation, and
+	// at the bottom of the last added widget if the grid is in a vertial
+	// orientation.  Using a grid in this manner works similar to a gtk.Box,
+	// but unlike gtk.Box, a gtk.Grid will respect its child widget's expand
+	// and margin properties.
+	grid.Add(SearchBar())
+	grid.Add(SearchButton())
+
+	// Widgets may also be added by calling (*gtk.Grid).Attach() to specify
+	// where to place the widget in the grid, and optionally how many rows
+	// and columns to span over.
+	//
+	// Additional rows and columns are automatically added to the grid as
+	// necessary when new widgets are added with (*gtk.Container).Add(), or,
+	// as shown in this case, using (*gtk.Grid).Attach().
+	//
+	// In this case, a notebook is added beside the widgets inserted above.
+	// The notebook widget is inserted with a left position of 1, a top
+	// position of 1 (starting at the same vertical position as the button),
+	// a width of 1 column, and a height of 2 rows (spanning down to the
+	// same vertical position as the entry).
+	//
+	// This example also demonstrates how not every area of the grid must
+	// contain a widget.  In particular, the area to the right of the label
+	// and the right of spin button have contain no widgets.
+	grid.Attach(nb, 1, 1, 1, 2)
+	nb.SetHExpand(true)
+	nb.SetVExpand(true)
+
+	// Add a child widget and tab label to the notebook so it renders.
+	nbChild, err := gtk.LabelNew("Notebook content")
+	if err != nil {
+		log.Fatal("Unable to create button:", err)
+	}
+	nbTab, err := gtk.LabelNew("Tab label")
+	if err != nil {
+		log.Fatal("Unable to create label:", err)
+	}
+	nb.AppendPage(nbChild, nbTab)
+
+	// Add the grid to the window, and show all widgets.
+	win.Add(grid)
+	win.ShowAll()
+
+	gtk.Main()
 }
+
 
 
 // A search Bar
