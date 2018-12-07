@@ -41,13 +41,7 @@ func newWindow(application *gtk.Application) *gtk.ApplicationWindow {
 		log.Fatal("Unable to create window:", err)
 	}
 
-	win.SetTitle("GOTK3 Actions Example")
-
-	// create a search bar
-	entry, err := gtk.EntryNew()
-	if err != nil {
-		log.Fatal("Unable to create entry:", err)
-	}
+	win.SetTitle("Weather Application")
 
 
 
@@ -57,8 +51,8 @@ func newWindow(application *gtk.Application) *gtk.ApplicationWindow {
 		log.Fatal("Could not create header bar:", err)
 	}
 	header.SetShowCloseButton(true)
-	header.SetTitle("GOTK3")
-	header.SetSubtitle("Actions Example")
+	header.SetTitle("Weather App")
+	header.SetSubtitle("Weather App")
 
 	// Create a new menu button
 	mbtn, err := gtk.MenuButtonNew()
@@ -96,9 +90,32 @@ func newWindow(application *gtk.Application) *gtk.ApplicationWindow {
 	header.PackStart(mbtn)
 
 	// Assemble the window
-	win.Add(entry)
+	win.Add(SearchBar())
+	win.Add(SearchButton())
 	win.SetTitlebar(header)
 	win.SetPosition(gtk.WIN_POS_MOUSE)
 	win.SetDefaultSize(600, 300)
 	return win
+}
+
+
+// A search Bar
+
+func SearchBar() *gtk.Entry {
+	// create a search bar
+	entry, err := gtk.EntryNew()
+	if err != nil {
+		log.Fatal("Unable to create entry:", err)
+	}
+
+	entry.SetPlaceholderText("Enter the Location")
+	return entry
+}
+
+func SearchButton() *gtk.Button{
+	buttonHello, err := gtk.ButtonNewWithLabel("Search")
+	if err != nil {
+		log.Fatal("Unable to create Button:", err)
+	}
+	return buttonHello
 }
