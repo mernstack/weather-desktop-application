@@ -62,7 +62,7 @@ func main() {
 	// This example also demonstrates how not every area of the grid must
 	// contain a widget.  In particular, the area to the right of the label
 	// and the right of spin button have contain no widgets.
-	grid.Attach(nb, 1, 1, 1, 2)
+	grid.Attach(nb, 1, 1, 100, 200)
 	nb.SetHExpand(true)
 	nb.SetVExpand(true)
 
