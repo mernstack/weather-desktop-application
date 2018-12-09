@@ -10,8 +10,6 @@ import (
 
 var S string
 
-var Entry *gtk.Entry
-
 func main() {
 	gtk.Init(nil)
 
@@ -96,13 +94,21 @@ func main() {
 
 func SearchBar() *gtk.Entry {
 	// create a search bar
-	Entry, err := gtk.EntryNew()
+	entry, err := gtk.EntryNew()
 	if err != nil {
 		log.Fatal("Unable to create entry:", err)
 	}
 
-	Entry.SetPlaceholderText("Enter the Location")
-	return Entry
+
+	entry.Connect("activate", func() {
+
+		S, err = entry.GetText()
+		fmt.Println(S,err)
+
+	})
+
+	entry.SetPlaceholderText("Enter the Location")
+	return entry
 }
 
 func SearchButton() *gtk.Button{
@@ -112,10 +118,7 @@ func SearchButton() *gtk.Button{
 	}
 
 	buttonSearch.Connect("clicked", func() {
-		S,err = Entry.GetText()
-		if err != nil{
-			fmt.Println(err)
-		}
+		fmt.Println("Clicked")
 		weatherData := weather_api.ShowWeather(S)
 		fmt.Println(weatherData);
 
