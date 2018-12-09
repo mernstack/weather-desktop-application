@@ -101,9 +101,6 @@ func SearchBar() *gtk.Entry {
 		log.Fatal("Unable to create entry:", err)
 	}
 
-
-
-
 	Entry.SetPlaceholderText("Enter the Location")
 	return Entry
 }
@@ -115,7 +112,10 @@ func SearchButton() *gtk.Button{
 	}
 
 	buttonSearch.Connect("clicked", func() {
-		S,_ = Entry.GetText()
+		S,err = Entry.GetText()
+		if err != nil{
+			fmt.Println(err)
+		}
 		weatherData := weather_api.ShowWeather(S)
 		fmt.Println(weatherData);
 
