@@ -10,6 +10,8 @@ import (
 
 var S string
 
+var Entry *gtk.Entry
+
 func main() {
 	gtk.Init(nil)
 
@@ -38,14 +40,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Unable to create notebook:", err)
 	}
-	entry, err := gtk.EntryNew()
-	if err != nil {
-		log.Fatal("Unable to create entry:", err)
-	}
 
-
-
-	entry.SetPlaceholderText("Enter the Location")
 	// Calling (*gtk.Container).Add() with a gtk.Grid will add widgets next
 	// to each other, in the order they were added, to the right side of the
 	// last added widget when the grid is in a horizontal orientation, and
@@ -53,14 +48,8 @@ func main() {
 	// orientation.  Using a grid in this manner works similar to a gtk.Box,
 	// but unlike gtk.Box, a gtk.Grid will respect its child widget's expand
 	// and margin properties.
-	grid.Add(entry)
-	entry.SetHExpand(true)
+	grid.Add(SearchBar())
 	grid.Add(SearchButton())
-
-	entry.Connect("activate", func() {
-		S, _ = entry.GetText()
-
-	})
 
 	// Widgets may also be added by calling (*gtk.Grid).Attach() to specify
 	// where to place the widget in the grid, and optionally how many rows
@@ -103,6 +92,21 @@ func main() {
 
 
 
+// A search Bar
+
+func SearchBar() *gtk.Entry {
+	// create a search bar
+	Entry, err := gtk.EntryNew()
+	if err != nil {
+		log.Fatal("Unable to create entry:", err)
+	}
+
+
+
+
+	Entry.SetPlaceholderText("Enter the Location")
+	return Entry
+}
 
 func SearchButton() *gtk.Button{
 	buttonSearch, err := gtk.ButtonNewWithLabel("Search")
@@ -111,9 +115,10 @@ func SearchButton() *gtk.Button{
 	}
 
 	buttonSearch.Connect("clicked", func() {
-		fmt.Println("Clicked")
-		var stringD  = weather_api.ShowWeather(S)
-		fmt.Println(stringD)
+		S,_ = Entry.GetText()
+		weatherData := weather_api.ShowWeather(S)
+		fmt.Println(weatherData);
+
 	})
 
 	return buttonSearch
